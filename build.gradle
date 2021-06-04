@@ -25,6 +25,11 @@ plugins {
 group 'org.example'
 version '1.0-SNAPSHOT'
 
+//ratpackkotlin {
+//    mainClassName = 'sample.MainKt'
+//    buildSource = true
+//}
+
 repositories {
     mavenCentral()
 }

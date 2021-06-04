@@ -36,7 +36,7 @@ class JsonPlaceholder @Inject constructor(
 
     fun getSinglePost(id: Int): Promise<Post> {
         val url = HttpUrlBuilder
-            .http()
+            .https()
             .host("jsonplaceholder.typicode.com")
             .path("posts")
             .path(id.toString())
@@ -51,7 +51,7 @@ class JsonPlaceholder @Inject constructor(
 
     fun getPostComments(id: Int): Promise<PostComments> {
         val url = HttpUrlBuilder
-            .http()
+            .https()
             .host("jsonplaceholder.typicode.com")
             .path("posts")
             .path(id.toString())
@@ -67,7 +67,7 @@ class JsonPlaceholder @Inject constructor(
 
     fun getUser(id: Int): Promise<User> {
         val url = HttpUrlBuilder
-            .http()
+            .https()
             .host("jsonplaceholder.typicode.com")
             .path("users")
             .path(id.toString())
