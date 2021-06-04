@@ -20,12 +20,10 @@ class Refresh (
     }
 
     private val post: Deferred<Post> by lazyAsync {
-        println("post deferred")
         refreshService.jsonPlaceholder.getSinglePost(id).await()
     }
 
     private val postComments: Deferred<PostComments> by lazyAsync {
-        println("postComments deferred")
         refreshService.jsonPlaceholder.getPostComments(id).await()
     }
 

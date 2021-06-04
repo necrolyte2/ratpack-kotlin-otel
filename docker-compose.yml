@@ -1,0 +1,18 @@
+version: "3.1"
+services:
+  jaegerallinone:
+    image: jaegertracing/all-in-one:1.22
+    ports:
+      - 9411:9411
+      - 16686:16686
+    environment:
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
+
+  cassandra:
+    # Docker image from global docker registry
+    image: library/cassandra:2.2.9
+    container_name: cassandra-instorelookup
+    # Ports needed by the container
+    ports:
+      - "9160:9160"
+      - "9042:9042"
