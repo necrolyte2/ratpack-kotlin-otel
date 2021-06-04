@@ -30,7 +30,7 @@ fun app(bindings: List<Any> = listOf()) = ratpack {
     }
 
     handlers {
-        prefix("v1", V1Chain::class.java)
+        prefix("api/v1", V1Chain::class.java)
     }
 }
 

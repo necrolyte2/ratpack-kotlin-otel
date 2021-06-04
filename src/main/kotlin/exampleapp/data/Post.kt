@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Post(
     @JsonProperty("userId")
-    val userId: String,
+    val userId: String = "",
     @JsonProperty("id")
-    val id: Int,
+    val id: Int = 0,
     @JsonProperty("title")
-    val title: String,
+    val title: String = "",
     @JsonProperty("body")
-    val body: String
+    val body: String = ""
 )

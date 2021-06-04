@@ -13,7 +13,7 @@ class V1Chain @Inject constructor(
         get("hi") {
             render("hey there")
         }
-        path("post/:id") {
+        path(":id") {
             val id = allPathTokens.getOrDefault("id", "1")
             refreshService.refresh(id.toInt()).then {
                 render(json(it))
