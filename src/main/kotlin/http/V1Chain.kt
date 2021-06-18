@@ -15,13 +15,21 @@ class V1Chain @Inject constructor(
         get("hi") {
             render("hey there")
         }
-        path(":id") {
+        path("onlyhttp/:id") {
             val id = allPathTokens.getOrDefault("id", "1")
             refreshService.refresh(id.toInt()).then {
                 render(json(it))
             }
         }
-        get("cassandra/:id") {
+        path("cassandrahttp/:id") {
+            val id = allPathTokens.getOrDefault("id", "1")
+            dataRepository.get(id).flatMap { dataRow ->
+                refreshService.refresh(dataRow.id.toInt())
+            }.then {
+                render(json(it))
+            }
+        }
+        get("onlycassandra/:id") {
             val id = allPathTokens.getOrDefault("id", "1")
             dataRepository.get(id).then {
                 render(json(it))
