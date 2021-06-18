@@ -34,7 +34,6 @@ fun app(bindings: List<Any> = listOf()) = ratpack {
 
         val cqlSession = CqlSession
             .builder()
-            .withKeyspace("datarepo")
             .withLocalDatacenter("datacenter1")
             .addContactPoint(InetSocketAddress("127.0.0.1", 9042))
             .build()

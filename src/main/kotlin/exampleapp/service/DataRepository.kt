@@ -21,6 +21,7 @@ class DataRepository @Inject constructor(
         "CREATE KEYSPACE IF NOT EXISTS datarepo WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}"
             )
         )
+        cqlSession.execute("USE datarepo")
         cqlSession.execute(
             SimpleStatement.newInstance(
         "CREATE TABLE IF NOT EXISTS datarow (" +
@@ -28,6 +29,11 @@ class DataRepository @Inject constructor(
                 "  value text," +
                 "  PRIMARY KEY (id)" +
                 ");"
+            )
+        )
+        cqlSession.execute(
+            SimpleStatement.newInstance(
+                "INSERT INTO datarow (id, value) VALUES ('1', 'testing') IF NOT EXISTS"
             )
         )
     }
@@ -42,7 +48,7 @@ class DataRepository @Inject constructor(
         }
     }
 
-    fun  get(id: String): Promise<DataRow> {
+    fun get(id: String): Promise<DataRow> {
         val mapper: DataRowMapper = DataRowMapper.builder(cqlSession).withDefaultKeyspace("datarepo").build()
         val dao = mapper.dataRowDao()
         return toDataRowPromise(dao.get(id))
