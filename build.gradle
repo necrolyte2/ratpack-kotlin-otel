@@ -3,6 +3,7 @@ buildscript {
         lombokVersion = "1.18.6"
         kloggerVersion = "1.7.7"
         ratpackKotlinVersion = "1.9.4"
+        javaDriverVersion = '4.9.0'
     }
     repositories {
         mavenLocal()
@@ -22,19 +23,21 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
 group 'org.example'
 version '1.0-SNAPSHOT'
-
-//ratpackkotlin {
-//    mainClassName = 'sample.MainKt'
-//    buildSource = true
-//}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    kapt group: 'com.datastax.oss', name: 'java-driver-mapper-processor', version: javaDriverVersion
+    compile group: 'com.datastax.oss', name: 'java-driver-mapper-runtime', version: javaDriverVersion
+
     compile "org.slf4j:slf4j-simple:1.7.26"
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     testCompileOnly("org.projectlombok:lombok:${lombokVersion}")

@@ -11,7 +11,6 @@ services:
   cassandra:
     # Docker image from global docker registry
     image: library/cassandra:2.2.9
-    container_name: cassandra-instorelookup
     # Ports needed by the container
     ports:
       - "9160:9160"
