@@ -5,9 +5,12 @@ import com.datastax.oss.driver.api.core.cql.SimpleStatement
 import com.google.inject.Inject
 import exampleapp.mapper.DataRowMapper
 import exampleapp.mapper.datarow.DataRow
+import ratpack.exec.Promise
 import ratpack.service.Service
 import ratpack.service.StartEvent
 import ratpack.service.StopEvent
+import java.util.concurrent.CompletionStage
+import javax.xml.crypto.Data
 
 class DataRepository @Inject constructor(
     private val cqlSession: CqlSession
@@ -33,9 +36,15 @@ class DataRepository @Inject constructor(
         cqlSession.close()
     }
 
-    fun  get(id: String): DataRow {
+    fun toDataRowPromise(completionStage: CompletionStage<DataRow>): Promise<DataRow> {
+        return Promise.async<DataRow> { upstream ->
+            upstream.accept(completionStage)
+        }
+    }
+
+    fun  get(id: String): Promise<DataRow> {
         val mapper: DataRowMapper = DataRowMapper.builder(cqlSession).withDefaultKeyspace("datarepo").build()
         val dao = mapper.dataRowDao()
-        return dao.get(id)
+        return toDataRowPromise(dao.get(id))
     }
 }

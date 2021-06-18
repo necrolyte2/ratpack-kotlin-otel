@@ -23,7 +23,9 @@ class V1Chain @Inject constructor(
         }
         get("cassandra/:id") {
             val id = allPathTokens.getOrDefault("id", "1")
-            render(json(dataRepository.get(id)))
+            dataRepository.get(id).then {
+                render(json(it))
+            }
         }
     }
 }
