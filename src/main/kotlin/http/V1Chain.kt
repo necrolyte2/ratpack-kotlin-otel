@@ -3,6 +3,7 @@ package http
 import com.google.inject.Inject
 import exampleapp.service.DataRepository
 import exampleapp.service.RefreshService
+import ratpack.exec.util.ParallelBatch
 import ratpack.jackson.Jackson.json
 import ratpack.kotlin.handling.KChain
 import ratpack.kotlin.handling.KChainAction
@@ -23,7 +24,12 @@ class V1Chain @Inject constructor(
         }
         path("cassandrahttp/:id") {
             val id = allPathTokens.getOrDefault("id", "1")
-            dataRepository.get(id).flatMap { dataRow ->
+            val promises = listOf(
+                dataRepository.get(id)
+            )
+            ParallelBatch.of(promises).yieldAll()
+            .flatMap {
+                val dataRow = it[0].value
                 refreshService.refresh(dataRow.id.toInt())
             }.then {
                 render(json(it))
