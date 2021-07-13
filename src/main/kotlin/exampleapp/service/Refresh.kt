@@ -36,6 +36,8 @@ class Refresh (
         // Pretend we are getting the post that we created
         // but really we just do this to chain another call for testing
         createPost.await().id
+        // Inject a timeout
+        doHttpTimeout.await()
         // Just use post id 1 since the http post method doesn't actually create an object
         val postId = 1
         refreshService.jsonPlaceholder.getSinglePost(postId).await()
@@ -54,6 +56,10 @@ class Refresh (
     private val userLast: Deferred<User> by lazyAsync {
         val userId = postComments.await().last().id
         refreshService.jsonPlaceholder.getUser(userId).await()
+    }
+
+    private val doHttpTimeout: Deferred<Int> by lazyAsync {
+        refreshService.jsonPlaceholder.getURLThatHasTimeout().await()
     }
 
     private fun startCoroutines() {

@@ -9,6 +9,8 @@ import ratpack.exec.Promise
 import ratpack.http.HttpMethod
 import ratpack.http.HttpUrlBuilder
 import ratpack.http.client.HttpClient
+import ratpack.http.client.ReceivedResponse
+import java.time.Duration
 
 class JsonPlaceholder @Inject constructor(
     private val httpClient: HttpClient,
@@ -77,6 +79,29 @@ class JsonPlaceholder @Inject constructor(
             val body = it.body.text
             println(body)
             objectMapper.readValue(body, User::class.java)
+        }
+    }
+
+    fun getURLThatHasTimeout(): Promise<Int> {
+        val url = HttpUrlBuilder
+            .http()
+            .host("localhost")
+            .port(9999)
+            .path("api/v1/timeout")
+            .params("duration", "5s")
+            .build()
+        println(url)
+
+        return httpClient.copyWith {
+            it.readTimeout(Duration.ofSeconds(1))
+            it.connectTimeout( Duration.ofSeconds(1))
+        }
+        .get(url)
+        .map {
+            1
+        }.mapError {
+            println("an error was seen")
+            1
         }
     }
 }
