@@ -1,6 +1,5 @@
 package exampleapp.service
 
-import com.datastax.oss.driver.api.core.CqlSession
 import com.datastax.oss.driver.api.core.cql.SimpleStatement
 import com.google.inject.Inject
 import exampleapp.mapper.DataRowMapper
@@ -9,20 +8,20 @@ import ratpack.exec.Promise
 import ratpack.service.Service
 import ratpack.service.StartEvent
 import ratpack.service.StopEvent
+import ratpackkotlinotel.promisesession.PromiseSession
 import java.util.concurrent.CompletionStage
-import javax.xml.crypto.Data
 
 class DataRepository @Inject constructor(
-    private val cqlSession: CqlSession
+    private val promiseSession: PromiseSession
 ): Service {
     override fun onStart(event: StartEvent) {
-        cqlSession.execute(
+        promiseSession.execute(
             SimpleStatement.newInstance(
         "CREATE KEYSPACE IF NOT EXISTS datarepo WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1}"
             )
         )
-        cqlSession.execute("USE datarepo")
-        cqlSession.execute(
+        promiseSession.execute("USE datarepo")
+        promiseSession.execute(
             SimpleStatement.newInstance(
         "CREATE TABLE IF NOT EXISTS datarow (" +
                 "  id text," +
@@ -31,7 +30,7 @@ class DataRepository @Inject constructor(
                 ");"
             )
         )
-        cqlSession.execute(
+        promiseSession.execute(
             SimpleStatement.newInstance(
                 "INSERT INTO datarow (id, value) VALUES ('1', 'testing') IF NOT EXISTS"
             )
@@ -39,7 +38,7 @@ class DataRepository @Inject constructor(
     }
 
     override fun onStop(event: StopEvent) {
-        cqlSession.close()
+        promiseSession.close()
     }
 
     fun toDataRowPromise(completionStage: CompletionStage<DataRow>): Promise<DataRow> {
@@ -49,8 +48,8 @@ class DataRepository @Inject constructor(
     }
 
     fun get(id: String): Promise<DataRow> {
-        val mapper: DataRowMapper = DataRowMapper.builder(cqlSession).withDefaultKeyspace("datarepo").build()
+        val mapper: DataRowMapper = DataRowMapper.builder(promiseSession).withDefaultKeyspace("datarepo").build()
         val dao = mapper.dataRowDao()
-        return toDataRowPromise(dao.get(id))
+        return PromiseSession.toPromise(dao.get(id))
     }
 }

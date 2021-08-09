@@ -15,6 +15,9 @@ import ratpack.kotlin.handling.ratpack
 import ratpack.server.ServerConfig
 import ratpack.service.Service
 import ratpack.service.StartEvent
+import ratpackkotlinotel.promisesession.DefaultPromiseSession
+import ratpackkotlinotel.promisesession.PromiseSession
+import ratpackkotlinotel.promisesession.PromiseSessionProvider
 import java.net.InetSocketAddress
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,13 +34,6 @@ fun app(bindings: List<Any> = listOf()) = ratpack {
         for (b in bindings) {
             bindInstance(b)
         }
-
-        val cqlSession = CqlSession
-            .builder()
-            .withLocalDatacenter("datacenter1")
-            .addContactPoint(InetSocketAddress("127.0.0.1", 9042))
-            .build()
-        bindInstance(CqlSession::class.java, cqlSession)
 
         module(ApplicationModule(serverConfig))
         bind(StartupService::class.java)

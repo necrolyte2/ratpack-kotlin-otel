@@ -85,7 +85,7 @@ class JsonPlaceholder @Inject constructor(
     fun getURLThatHasTimeout(): Promise<Int> {
         val url = HttpUrlBuilder
             .http()
-            .host("localhost")
+            .host("localhost1")
             .port(9999)
             .path("api/v1/timeout")
             .params("duration", "5s")
