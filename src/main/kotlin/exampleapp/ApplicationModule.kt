@@ -11,9 +11,9 @@ import ratpackkotlinotel.promisesession.PromiseSessionProvider
 
 class ApplicationModule constructor(val serverConfig: ServerConfig) : AbstractModule() {
     override fun configure() {
-        bind(PromiseSession::class.java).toProvider(PromiseSessionProvider::class.java).`in`(Scopes.SINGLETON)
+        //bind(PromiseSession::class.java).toProvider(PromiseSessionProvider::class.java).`in`(Scopes.SINGLETON)
         bind(RefreshService::class.java).`in`(Scopes.SINGLETON)
         bind(V1Chain::class.java).`in`(Scopes.SINGLETON)
-        bind(DataRepository::class.java).`in`(Scopes.SINGLETON)
+        //bind(DataRepository::class.java).`in`(Scopes.SINGLETON)
     }
 }

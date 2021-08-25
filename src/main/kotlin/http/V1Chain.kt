@@ -9,8 +9,8 @@ import ratpack.kotlin.handling.KChain
 import ratpack.kotlin.handling.KChainAction
 
 class V1Chain @Inject constructor(
-    private val refreshService: RefreshService,
-    private val dataRepository: DataRepository
+    private val refreshService: RefreshService//,
+    //private val dataRepository: DataRepository
 ): KChainAction() {
     override fun execute() {
         get("hi") {
@@ -22,24 +22,24 @@ class V1Chain @Inject constructor(
                 render(json(it))
             }
         }
-        path("cassandrahttp/:id") {
-            val id = allPathTokens.getOrDefault("id", "1")
-            val promises = listOf(
-                dataRepository.get(id)
-            )
-            ParallelBatch.of(promises).yieldAll()
-            .flatMap {
-                val dataRow = it[0].value
-                refreshService.refresh(dataRow.id.toInt())
-            }.then {
-                render(json(it))
-            }
-        }
-        get("onlycassandra/:id") {
-            val id = allPathTokens.getOrDefault("id", "1")
-            dataRepository.get(id).then {
-                render(json(it))
-            }
-        }
+//        path("cassandrahttp/:id") {
+//            val id = allPathTokens.getOrDefault("id", "1")
+//            val promises = listOf(
+//                dataRepository.get(id)
+//            )
+//            ParallelBatch.of(promises).yieldAll()
+//            .flatMap {
+//                val dataRow = it[0].value
+//                refreshService.refresh(dataRow.id.toInt())
+//            }.then {
+//                render(json(it))
+//            }
+//        }
+//        get("onlycassandra/:id") {
+//            val id = allPathTokens.getOrDefault("id", "1")
+//            dataRepository.get(id).then {
+//                render(json(it))
+//            }
+//        }
     }
 }

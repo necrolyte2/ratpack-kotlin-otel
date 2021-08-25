@@ -82,12 +82,12 @@ class JsonPlaceholder @Inject constructor(
         }
     }
 
-    fun getURLThatHasTimeout(): Promise<Int> {
+    fun getErrorURL(host: String, path: String, port: Int, params: Map<String, *>): Promise<Int> {
         val url = HttpUrlBuilder
             .http()
-            .host("localhost1")
-            .port(9999)
-            .path("api/v1/timeout")
+            .host(host)
+            .port(port)
+            .path(path)
             .params("duration", "5s")
             .build()
         println(url)
@@ -96,12 +96,24 @@ class JsonPlaceholder @Inject constructor(
             it.readTimeout(Duration.ofSeconds(1))
             it.connectTimeout( Duration.ofSeconds(1))
         }
-        .get(url)
-        .map {
-            1
-        }.mapError {
-            println("an error was seen")
-            1
-        }
+            .get(url)
+            .map {
+                1
+            }.mapError {
+                println("an error was seen")
+                1
+            }
+    }
+
+    fun getURLThatHasTimeout(): Promise<Int> {
+       return getErrorURL("localhost", "api/v1/timeout", 9999, mapOf("duration" to "60s"))
+    }
+
+    fun getURLThatHasHostUnknown(): Promise<Int> {
+        return getErrorURL("invalid.host.com", "", 80, emptyMap<String, String>())
+    }
+
+    fun getURLThatHasConnectError(): Promise<Int> {
+        return getErrorURL("localhost", "", 9998, emptyMap<String, String>())
     }
 }

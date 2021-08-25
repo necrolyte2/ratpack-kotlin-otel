@@ -19,7 +19,10 @@ class Refresh (
             post = post.await(),
             postComments = postComments.await(),
             userFirst = userFirst.await(),
-            userLast = userLast.await()
+            userLast = userLast.await(),
+            timeout = doHttpTimeout.await(),
+            hostUnknown = doHttpHostNotFound.await(),
+            connectError = doHttpConnectError.await()
         )
     }
 
@@ -62,13 +65,24 @@ class Refresh (
         refreshService.jsonPlaceholder.getURLThatHasTimeout().await()
     }
 
+    private val doHttpHostNotFound: Deferred<Int> by lazyAsync {
+        refreshService.jsonPlaceholder.getURLThatHasHostUnknown().await()
+    }
+
+    private val doHttpConnectError: Deferred<Int> by lazyAsync {
+        refreshService.jsonPlaceholder.getURLThatHasConnectError().await()
+    }
+
     private fun startCoroutines() {
         val coroutines = listOf(
             createPost,
+            post,
+            postComments,
             userFirst,
             userLast,
-            post,
-            postComments
+            doHttpTimeout,
+            doHttpHostNotFound,
+            doHttpConnectError
         )
         coroutines.forEach { deferredFunc ->
             deferredFunc.start()
