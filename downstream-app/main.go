@@ -25,8 +25,14 @@ func timeoutHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("{\"status\": \"up\"}"))
+	w.WriteHeader(200)
+}
+
 func addRoutes() {
 	http.HandleFunc("/api/v1/timeout", timeoutHandler)
+	http.HandleFunc("/health", healthHandler)
 }
 
 func main() {

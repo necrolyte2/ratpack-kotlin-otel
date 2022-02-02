@@ -100,9 +100,29 @@ class JsonPlaceholder @Inject constructor(
             .map {
                 1
             }.mapError {
-                println("an error was seen")
+                println("Caught error trying to do an http request to ${host}:${port}")
                 1
             }
+    }
+
+    fun getURLBody(host: String, path: String, port: Int, params: Map<String, *>): Promise<ReceivedResponse> {
+        val url = HttpUrlBuilder
+            .http()
+            .host(host)
+            .port(port)
+            .path(path)
+            .params(params)
+            .build()
+        println(url)
+
+        return httpClient.copyWith {
+            it.readTimeout(Duration.ofSeconds(1))
+            it.connectTimeout( Duration.ofSeconds(1))
+        }
+        .get(url)
+        .map {
+            it
+        }
     }
 
     fun getURLThatHasTimeout(): Promise<Int> {
@@ -115,5 +135,15 @@ class JsonPlaceholder @Inject constructor(
 
     fun getURLThatHasConnectError(): Promise<Int> {
         return getErrorURL("localhost", "", 9998, emptyMap<String, String>())
+    }
+
+    fun getHostUnreachableError(): Promise<Int> {
+        return getErrorURL("192.168.5.1", "", 9999, emptyMap<String, String>())
+    }
+
+    fun getLocalURL(hostname: String): Promise<String> {
+        return getURLBody(hostname, "/health", 9999, mapOf("duration" to "1ms")).map {
+            it.body.text
+        }
     }
 }

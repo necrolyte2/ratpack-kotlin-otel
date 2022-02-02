@@ -20,3 +20,8 @@ services:
     build: downstream-app
     ports:
       - "9999:9999"
+
+  otel-ratpack-kotlin:
+    build: .
+    ports:
+      - "5050:5050"

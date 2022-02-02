@@ -16,10 +16,30 @@ class V1Chain @Inject constructor(
         get("hi") {
             render("hey there")
         }
+        path("connectiontimeout") {
+            refreshService.jsonPlaceholder.getURLThatHasConnectError().then {
+                render("fetched conn error host")
+            }
+        }
+        path("unknownhost") {
+            refreshService.jsonPlaceholder.getURLThatHasHostUnknown().then {
+                render("fetched unknown host")
+            }
+        }
         path("onlyhttp/:id") {
             val id = allPathTokens.getOrDefault("id", "1")
             refreshService.refresh(id.toInt()).then {
                 render(json(it))
+            }
+        }
+        path("localthing") {
+            val qParams = this.request.queryParams
+            var hostname = "localhost"
+            if ("hostname" in qParams) {
+                hostname = qParams["hostname"].toString()
+            }
+            refreshService.jsonPlaceholder.getLocalURL(hostname).then {
+                render("did local url for $hostname<br/>$it")
             }
         }
 //        path("cassandrahttp/:id") {

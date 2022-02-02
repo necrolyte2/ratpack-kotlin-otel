@@ -7,5 +7,6 @@ data class RefreshItem(
     var userLast: User,
     var timeout: Int,
     var hostUnknown: Int,
-    var connectError: Int
+    var connectError: Int,
+    var hostUnreachable: Int
 )

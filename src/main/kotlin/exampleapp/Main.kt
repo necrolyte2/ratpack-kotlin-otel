@@ -18,6 +18,7 @@ import ratpack.service.StartEvent
 import ratpackkotlinotel.promisesession.DefaultPromiseSession
 import ratpackkotlinotel.promisesession.PromiseSession
 import ratpackkotlinotel.promisesession.PromiseSessionProvider
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -29,6 +30,10 @@ fun main() {
 
 fun app(bindings: List<Any> = listOf()) = ratpack {
     System.setProperty("log4j2.contextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+
+    serverConfig {
+        env()
+    }
 
     bindings {
         for (b in bindings) {
